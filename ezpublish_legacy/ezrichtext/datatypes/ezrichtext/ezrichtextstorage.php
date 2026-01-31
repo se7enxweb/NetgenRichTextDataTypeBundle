@@ -34,13 +34,21 @@ class eZRichTextStorage
     {
         $this->container = ezpKernel::instance()->getServiceContainer();
 
-        $this->fieldType = $this->container->get('ezpublish.fieldType.ezrichtext');
-        $this->contentHandler = $this->container->get('ezpublish.spi.persistence.content_handler');
-        $this->externalStorage = $this->container->get('ezpublish.fieldType.ezrichtext.externalStorage');
+        if ( $this->container )
+        {
+            $this->fieldType = $this->container->get('ezpublish.fieldType.ezrichtext');
+            $this->contentHandler = $this->container->get('ezpublish.spi.persistence.content_handler');
+            $this->externalStorage = $this->container->get('ezpublish.fieldType.ezrichtext.externalStorage');
+        }
     }
 
     public function storeFieldData(eZContentObjectAttribute $objectAttribute, Value $value)
     {
+        if ( !$this->fieldType )
+        {
+            return;
+        }
+
         $versionInfo = $this->getVersionInfo(
             $objectAttribute->attribute('contentobject_id'),
             $objectAttribute->attribute('version')
@@ -55,6 +63,11 @@ class eZRichTextStorage
 
     public function getFieldData(eZContentObjectAttribute $objectAttribute, Value $value)
     {
+        if ( !$this->externalStorage || !$this->fieldType )
+        {
+            return $value;
+        }
+
         $versionInfo = $this->getVersionInfo(
             $objectAttribute->attribute('contentobject_id'),
             $objectAttribute->attribute('version')
@@ -62,9 +75,13 @@ class eZRichTextStorage
 
         $field = $this->getField($objectAttribute, $value);
 
-        $this->externalStorage->getFieldData($versionInfo, $field, array());
+        if ( $field )
+        {
+            $this->externalStorage->getFieldData($versionInfo, $field, array());
+            return $this->fieldType->fromPersistenceValue($field->value);
+        }
 
-        return $this->fieldType->fromPersistenceValue($field->value);
+        return $value;
     }
 
     public function deleteFieldData(eZContentObjectAttribute $objectAttribute, $version = null)
@@ -131,6 +148,11 @@ class eZRichTextStorage
      */
     protected function getField(eZContentObjectAttribute $objectAttribute, Value $value)
     {
+        if ( !$this->fieldType )
+        {
+            return null;
+        }
+
         return new Field(
             array(
                 'id' => (int)$objectAttribute->attribute('id'),

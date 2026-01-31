@@ -28,6 +28,11 @@ class eZRichTextType extends eZDataType
     protected $storage;
 
     /**
+     * @var bool Whether this datatype is properly initialized with Symfony services
+     */
+    protected $enabled = false;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -39,10 +44,23 @@ class eZRichTextType extends eZDataType
         );
 
         $this->container = ezpKernel::instance()->getServiceContainer();
+        $this->enabled = false;  // Disable richtext on pure legacy
 
-        $this->fieldType = $this->container->get('ezpublish.fieldType.ezrichtext');
+        if ( $this->container )
+        {
+            try {
+                $this->fieldType = $this->container->get('ezpublish.fieldType.ezrichtext');
+                $this->enabled = true;
+            } catch (Exception $e) {
+                $this->enabled = false;
+            }
+        }
 
-        $this->storage = new eZRichTextStorage();
+        try {
+            $this->storage = new eZRichTextStorage();
+        } catch (Exception $e) {
+            $this->storage = null;
+        }
     }
 
     /**
@@ -54,6 +72,12 @@ class eZRichTextType extends eZDataType
      */
     public function initializeObjectAttribute($objectAttribute, $currentVersion, $originalContentObjectAttribute)
     {
+        if ( !$this->fieldType )
+        {
+            $objectAttribute->setAttribute('data_text', '');
+            return;
+        }
+
         $value = $currentVersion != false ?
             $originalContentObjectAttribute->content() :
             $this->fieldType->getEmptyValue();
@@ -139,6 +163,11 @@ class eZRichTextType extends eZDataType
      */
     public function hasObjectAttributeContent($objectAttribute)
     {
+        if (!$this->enabled || !$this->fieldType)
+        {
+            return false;
+        }
+
         $value = $objectAttribute->content();
         if (!$value instanceof Value) {
             return false;
@@ -156,6 +185,11 @@ class eZRichTextType extends eZDataType
      */
     public function objectAttributeContent($objectAttribute)
     {
+        if ( !$this->storage )
+        {
+            return new Value($objectAttribute->attribute(self::RICH_TEXT_FIELD));
+        }
+
         $value = new Value($objectAttribute->attribute(self::RICH_TEXT_FIELD));
 
         return $this->storage->getFieldData($objectAttribute, $value);
