@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "ibexa/core": "^4.4",
-        "netgen/ngsymfonytools": "^2.0"
+        "se7enxweb/ngsymfonytools": "^3.0"
     },
     "autoload": {
         "psr-4": { "Netgen\\Bundle\\RichTextDataTypeBundle\\": "" }

@@ -1,12 +1,12 @@
 <?php
 
-use Ibexa\FieldTypeRichText\FieldType\RichText\Type;
-use Ibexa\FieldTypeRichText\FieldType\RichText\Value;
-use Ibexa\FieldTypeRichText\FieldType\RichText\RichTextStorage;
-use Ibexa\Contracts\Core\Persistence\Content\Field;
-use Ibexa\Contracts\Core\Persistence\Content\Handler;
-use Ibexa\Contracts\Core\Persistence\Content\VersionInfo;
-use Ibexa\Contracts\Core\Persistence\Content\ContentInfo;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Type;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Value;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\RichTextStorage;
+use eZ\Publish\SPI\Persistence\Content\Field;
+use eZ\Publish\SPI\Persistence\Content\Handler;
+use eZ\Publish\SPI\Persistence\Content\VersionInfo;
+use eZ\Publish\SPI\Persistence\Content\ContentInfo;
 
 class eZRichTextStorage
 {
@@ -16,17 +16,17 @@ class eZRichTextStorage
     protected $container;
 
     /**
-     * @var \Ibexa\FieldTypeRichText\FieldType\RichText\Type
+     * @var \EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Type
      */
     protected $fieldType;
 
     /**
-     * @var \Ibexa\Contracts\Core\Persistence\Content\Handler
+     * @var \eZ\Publish\SPI\Persistence\Content\Handler
      */
     protected $contentHandler;
 
     /**
-     * @var \Ibexa\FieldTypeRichText\FieldType\RichText\RichTextStorage
+     * @var \EzSystems\EzPlatformRichText\eZ\FieldType\RichText\RichTextStorage
      */
     protected $externalStorage;
 
@@ -38,7 +38,7 @@ class eZRichTextStorage
         $this->container = ezpKernel::instance()->getServiceContainer();
 
         $this->fieldType = $this->container->get(Type::class);
-        $this->contentHandler = $this->container->get(Handler::class);
+        $this->contentHandler = $this->container->get('ezpublish.spi.persistence.cache.contentHandler');
         $this->externalStorage = $this->container->get(RichTextStorage::class);
     }
 

@@ -1,10 +1,10 @@
 <?php
 
-use Ibexa\FieldTypeRichText\FieldType\RichText\Type;
-use Ibexa\FieldTypeRichText\FieldType\RichText\Value;
-use Ibexa\Contracts\Core\Repository\Values\Content\Relation;
-use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
-use Ibexa\Core\Repository\Values\ContentType\FieldDefinition;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Type;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Value;
+use eZ\Publish\API\Repository\Values\Content\Relation;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\Core\Repository\Values\ContentType\FieldDefinition;
 
 class eZRichTextType extends eZDataType
 {
