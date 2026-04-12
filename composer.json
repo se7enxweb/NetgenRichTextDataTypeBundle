@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "se7enxweb/ngsymfonytools": "^3.0"
+        "se7enxweb/ngsymfonytools": "^4.0"
     },
     "autoload": {
         "psr-4": { "Netgen\\Bundle\\RichTextDataTypeBundle\\": "" }
