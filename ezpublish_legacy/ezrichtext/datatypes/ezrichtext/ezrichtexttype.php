@@ -547,7 +547,11 @@ class eZRichTextType extends eZDataType
             return '';
         }
 
-        return $this->fieldType->getName($value);
+        return $this->fieldType->getName(
+            $value,
+            new FieldDefinition(),
+            (string)$objectAttribute->attribute('language_code')
+        );
     }
 
     /**
