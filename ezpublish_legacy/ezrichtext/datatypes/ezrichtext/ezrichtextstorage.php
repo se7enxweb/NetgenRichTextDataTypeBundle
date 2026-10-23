@@ -39,6 +39,19 @@ class eZRichTextStorage
             $this->fieldType = $this->container->get('ezpublish.fieldType.ezrichtext');
             $this->contentHandler = $this->container->get('ezpublish.spi.persistence.content_handler');
             $this->externalStorage = $this->container->get('ezpublish.fieldType.ezrichtext.externalStorage');
+
+            // The platform's storage writes the URL links through the Symfony connection, outside the
+            // legacy transaction this attribute is stored in (on SQLite it waits for that transaction's
+            // own write lock and fails with "database is locked"). Use the same storage logic with a
+            // gateway that runs on the legacy connection.
+            $storageClass = 'EzSystems\EzPlatformRichText\eZ\FieldType\RichText\RichTextStorage';
+            if ( $this->externalStorage instanceof $storageClass )
+            {
+                $this->externalStorage = new $storageClass(
+                    new eZRichTextLegacyStorageGateway( new eZRichTextLegacyUrlGateway() ),
+                    $this->container->has( 'logger' ) ? $this->container->get( 'logger' ) : null
+                );
+            }
         }
     }
 
