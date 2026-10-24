@@ -126,7 +126,22 @@ class eZRichTextType extends eZDataType
 
         $value = trim($http->postVariable($base . self::RICH_TEXT_VARIABLE . $objectAttributeId));
 
-        $objectAttribute->setContent(new Value($value));
+        // An emptied field is the empty document (loadXML() of an empty string throws on PHP 8).
+        if ($value === '') {
+            $objectAttribute->setContent(new Value());
+
+            return true;
+        }
+
+        // Text that is not well-formed XML has no document element, and storing the draft would
+        // fail on it (the platform reads the sort key of the document). validateObjectAttributeHTTPInput()
+        // reports it to the editor; the attribute keeps its stored value.
+        $document = new DOMDocument();
+        if (!@$document->loadXML($value)) {
+            return false;
+        }
+
+        $objectAttribute->setContent(new Value($document));
 
         return true;
     }
