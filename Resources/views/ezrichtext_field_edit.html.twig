@@ -1,5 +1,5 @@
 {% import '@NetgenRichTextDataType/field_macros.html.twig' as macros %}
 
 <textarea {{ macros.attributes(attr) }}>
-    {{ value.xml.saveXml()|raw }}
+    {{ value.xml.saveXml()|e('html') }}
 </textarea>
