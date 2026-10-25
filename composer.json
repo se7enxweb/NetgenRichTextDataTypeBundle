@@ -1,24 +1,26 @@
 {
-    "name": "netgen/richtext-datatype-bundle",
-    "description": "Netgen RichText datatype bundle allows eZ Publish Legacy to work with rich text (ezrichtext) field type available in Ibexa OSS",
+    "name": "se7enxweb/richtext-datatype-bundle",
+    "description": "Rich text datatype bundle: lets Exponential Legacy edit and publish content with the rich text (ezrichtext) field type of Exponential Platform 4.6 (Ibexa OSS 4.6)",
     "license": "GPL-2.0-only",
     "type": "ezplatform-bundle",
     "authors": [
         {
             "name": "Netgen",
             "homepage": "http://www.netgenlabs.com"
+        },
+        {
+            "name": "7x",
+            "email": "info@se7enx.com"
         }
     ],
     "require": {
         "ibexa/core": "^4.4",
         "netgen/ngsymfonytools": "^2.0"
     },
+    "replace": {
+        "netgen/richtext-datatype-bundle": "self.version"
+    },
     "autoload": {
         "psr-4": { "Netgen\\Bundle\\RichTextDataTypeBundle\\": "" }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        }
     }
 }
